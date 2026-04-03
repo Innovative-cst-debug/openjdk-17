@@ -18,12 +18,14 @@ build_package() {
     echo "[*] Building $PACKAGE-$ARCH"
     
     BUILD_DIR="build-$ARCH"
+    INSTALL_DIR="$(pwd)/$BUILD_DIR/install/$PREFIX"
+
     rm -rf "$BUILD_DIR"
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
   
     ../configure \
-      --prefix=$(pwd)/build/$PREFIX \
+      --prefix=$INSTALL_DIR \
       --shared \
       --uname=Linux
   
@@ -42,4 +44,5 @@ build_package() {
     unset CFLAGS
     unset LDFLAGS
     unset BUILD_DIR
+    unset INSTALL_DIR
 }
