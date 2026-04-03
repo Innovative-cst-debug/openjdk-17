@@ -16,23 +16,25 @@ configure() {
 
 build_package() { 
     echo "[*] Building $PACKAGE-$ARCH"
-    
+
     BUILD_DIR="build-$ARCH"
     INSTALL_DIR="$(pwd)/$BUILD_DIR/install/$PREFIX"
-    
+
     rm -rf "$BUILD_DIR"
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
-  
+
     ../configure \
-      --prefix=$INSTALL_DIR \
-      --shared \
-      --uname=Linux \
-      --enable-extra-encodings
-  
+      --prefix=$(pwd)/build/$PREFIX \
+      --host=$TARGET \
+      --enable-extra-encodings \
+      --enable-shared \
+      --disable-static
+
+
     make -j$(nproc)
     make install
     cd ..
-    
+
     unset CC CXX AR RANLIB STRIP CFLAGS LDFLAGS BUILD_DIR INSTALL_DIR
 }
