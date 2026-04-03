@@ -23,7 +23,7 @@ build_package() {
     cd "$BUILD_DIR"
   
     ../configure \
-      --prefix=$PWD/build/$PREFIX \
+      --prefix=$(pwd)/build/$PREFIX \
       --shared \
       --uname=Linux
   
@@ -32,6 +32,8 @@ build_package() {
     cd ..
     
     # Unset all toolchain and flags
+    NDK=$ANDROID_NDK
+    TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
     unset CC
     unset CXX
     unset AR
@@ -39,4 +41,5 @@ build_package() {
     unset STRIP
     unset CFLAGS
     unset LDFLAGS
+    unset BUILD_DIR
 }
