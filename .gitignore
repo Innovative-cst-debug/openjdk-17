@@ -1,0 +1,27 @@
+# Vim / editor swap files
+*.swp
+*.swo
+*~
+
+# Build scripts temp files
+*.tmp
+*.log
+
+# Android NDK (large + extracted)
+android-ndk-r26d/
+android-ndk-r26d-linux.zip
+
+# Source directory (downloaded code)
+src/
+
+# Build outputs
+out/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Permissions / cache
+.cache/
+
