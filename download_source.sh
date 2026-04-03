@@ -13,22 +13,16 @@ download_and_extract_to_src() {
         return 1
     fi
 
-    echo "[*] Dowloading source file for $PACKAGE..."
+    echo "[*] Downloading source file for $PACKAGE..."
+    curl -sSfL "$url" -o "$tmp_zip"
 
-    echo "Creating src directory at: $src_dir"
+    echo "[*] Extracting source into src directory..."
+    rm -rf "$src_dir"
     mkdir -p "$src_dir"
+    unzip -oq "$tmp_zip" -d "$src_dir"
 
-    echo "Downloading ZIP from: $url"
-    curl -L "$url" -o "$tmp_zip"
-
-    echo "Extracting ZIP into src directory"
-    unzip -q "$tmp_zip" -d "$src_dir"
-
-    echo "Cleaning up temporary files"
+    echo "[*] Cleaning up temporary files..."
     rm -f "$tmp_zip"
 
-    echo "Done"
+    echo "[✓] Source downloaded successfully."
 }
-
-# Example usage:
-# download_and_extract_to_src "https://example.com/code.zip"
