@@ -2,8 +2,8 @@
 set -e
 
 # Hard coded for build order
-for pkg in "zlib" "libiconv" "lib++" "libandroid-shmem" "libandroid-spawn"; do
-  ./build.sh pkg
+for pkg in "zlib" "libiconv" "libc++" "libandroid-shmem" "libandroid-spawn"; do
+  ./build.sh $pkg
 done
 
 PACKAGES_DIR="./packages"
