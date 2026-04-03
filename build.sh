@@ -13,6 +13,7 @@ export PACKAGE=$1
 
 if [ -z "$PACKAGE" ]; then
     echo "Usage: ./build.sh <package>"
+    unset_variables
     exit 1
 fi
 
@@ -27,7 +28,7 @@ source "$BUILD_SCRIPT"
 
 echo "[*] Building $PACKAGE...."
 
-if $HAS_SOURCE; then
+if ! $HAS_SOURCE; then
     download_and_extract_to_src $SRC_URL
 fi
 
