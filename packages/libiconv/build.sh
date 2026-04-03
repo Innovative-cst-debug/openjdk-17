@@ -25,7 +25,7 @@ build_package() {
     cd "$BUILD_DIR"
 
     ../configure \
-      --prefix=$(pwd)/build/$PREFIX \
+      --prefix=$INSTALL_DIR \
       --host=$TARGET \
       --enable-extra-encodings \
       --enable-shared \

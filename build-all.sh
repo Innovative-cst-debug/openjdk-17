@@ -23,17 +23,20 @@ done
 echo "Found packages: ${packages[*]}"
 echo
 
+echo "Clearing build..."
+rm -rf $ROOT_BUILD_DIR
+
 # Copy include directories
 for pkg in "${packages[@]}"; do
     echo "Processing package: $pkg"
 
     for arch in "${ARCHS[@]}"; do
-        SRC_INCLUDE="$PACKAGES_DIR/$pkg/src/build-$arch/include"
+        SRC_INCLUDE="$PACKAGES_DIR/$pkg/src/build-$arch/install"
         DST_INCLUDE="$ROOT_BUILD_DIR/$arch"
 
         if [ -d "$SRC_INCLUDE" ]; then
             mkdir -p "$DST_INCLUDE"
-            cp -r "$SRC_INCLUDE/"* "$DST_INCLUDE/"
+            cp -r "$SRC_INCLUDE/" "$DST_INCLUDE/"
             echo "Copied include for $pkg [$arch] -> $DST_INCLUDE"
         else
             echo "Include folder not found for $pkg [$arch], skipping."
