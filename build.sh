@@ -20,6 +20,7 @@ function unset_variables {
     unset TOOLCHAIN
     unset SRC_URL
     unset NEED_SOURCE
+    unset PACKAGES_DIRECTORY
 }
 
 function configure_and_build {
@@ -48,7 +49,8 @@ function configure_and_build {
 }
 
 export PACKAGE=$1
-PACKAGE_DIRECTORY="$(pwd)/packages/$PACKAGE"
+export PACKAGES_DIRECTORY="$(pwd)/packages"
+export PACKAGE_DIRECTORY="$PACKAGES_DIRECTORY/$PACKAGE"
 BUILD_SCRIPT="$PACKAGE_DIRECTORY/build.sh"
 
 if [ -z "$PACKAGE" ]; then
