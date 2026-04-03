@@ -19,6 +19,7 @@ function unset_variables {
     unset NDK
     unset TOOLCHAIN
     unset SRC_URL
+    unset NEED_SOURCE
 }
 
 function configure_and_build {
@@ -65,8 +66,9 @@ source "$BUILD_SCRIPT"
 
 echo "[*] Reading to build $PACKAGE...."
 
-if ! $HAS_SOURCE; then
-    download_and_extract_to_src $SRC_URL
+# Only download if source is not present and source is needed (default true)
+if [ "$HAS_SOURCE" = "false" ] && [ "${NEED_SOURCE:-true}" = "true" ]; then
+    download_and_extract_to_src "$SRC_URL"
 fi
 
 # Apply patches
@@ -74,9 +76,11 @@ apply_patches
 
 # Build for all architecture
 cd "$PACKAGE_DIRECTORY/src"
+
 for arch in arm64 arm x86 x86_64; do
   configure_and_build $arch
 done
+
 cd ../..
 
 unset_variables
