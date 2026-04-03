@@ -5,6 +5,11 @@ apply_patches() {
     echo "[*] Apply patches for $PACKAGE"
     local PATCH_DIR="$PACKAGE_DIRECTORY/patch"
 
+    if [ ! -d "$SRC_DIR" ]; then
+        echo "[!] Source directory '$SRC_DIR' does not exist, skipping patches."
+        return 0
+    fi
+
     cd "$PACKAGE_DIRECTORY/src"
 
     shopt -s nullglob

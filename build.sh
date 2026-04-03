@@ -74,8 +74,14 @@ fi
 # Apply patches
 apply_patches
 
+if [ ! -d "$PACKAGE_DIRECTORY/src" ]; then
+    # Initialize empty dir
+    mkdir -p "$PACKAGE_DIRECTORY/src"
+fi
+
 # Build for all architecture
 cd "$PACKAGE_DIRECTORY/src"
+
 
 for arch in arm64 arm x86 x86_64; do
   configure_and_build $arch
