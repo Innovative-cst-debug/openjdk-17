@@ -4,10 +4,10 @@ SRC_URL=https://github.com/openjdk/jdk17u/archive/refs/tags/jdk-17.0.18-ga.tar.g
 configure() {
     echo "[*] Configuring $PACKAGE-$ARCH"
 
-    NDK=$ANDROID_NDK
-    TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
-    SYSROOT="$TOOLCHAIN/sysroot"
-    INSTALL_DIR="$(pwd)/$BUILD_DIR/install/$PREFIX/lib/jvm/java-17"
+    export NDK=$ANDROID_NDK
+    export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
+    export SYSROOT="$TOOLCHAIN/sysroot"
+    export INSTALL_DIR="$(pwd)/$BUILD_DIR/install/$PREFIX/lib/jvm/java-17"
 
     export AR=$TOOLCHAIN/bin/llvm-ar
     export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
@@ -17,26 +17,22 @@ configure() {
     export OBJDUMP=$TOOLCHAIN/bin/llvm-objdump
 
     # Your built dependency root (VERY IMPORTANT)
-    SYSROOT_PREFIX="$ALL_PACKAGES_BUILD_DIR/$ARCH/install/data/data/com.logicodeum.ide/files/usr"
+    export SYSROOT_PREFIX="$ALL_PACKAGES_BUILD_DIR/$ARCH/install/data/data/com.logicodeum.ide/files/usr"
 
-    export CC="$TOOLCHAIN/bin/${TARGET}${API}-clang"  
-    export CXX="$TOOLCHAIN/bin/${TARGET}${API}-clang++"                 
-    export CFLAGS="--sysroot=$SYSROOT -fPIC -I$SYSROOT_PREFIX/include"  
+    export CC="$TOOLCHAIN/bin/${TARGET}${API}-clang"
+    export CXX="$TOOLCHAIN/bin/${TARGET}${API}-clang++"
+    export CFLAGS="--sysroot=$SYSROOT -fPIC -I$SYSROOT_PREFIX/include"
     export CXXFLAGS="--sysroot=$SYSROOT -fPIC -I$SYSROOT_PREFIX/include"
     export LDFLAGS="-L$SYSROOT_PREFIX/lib -Wl,-rpath=$SYSROOT_PREFIX/lib"
 
-    # Map arch → OpenJDK format
-    case $ARCH in
-        arm64) OPENJDK_ARCH=aarch64 ;;
-        arm) OPENJDK_ARCH=arm ;;
-        x86) OPENJDK_ARCH=x86 ;;
-        x86_64) OPENJDK_ARCH=x86_64 ;;
+    case "$ARCH" in
+        arm64) export TARGET_TRIPLE="aarch64-linux-gnu" ;;
+        arm)   export TARGET_TRIPLE="arm-linux-gnueabi" ;;
+        x86)   export TARGET_TRIPLE="i686-linux-gnu" ;;
+        x86_64) export TARGET_TRIPLE="x86_64-linux-gnu" ;;
+        *) echo "Unsupported ARCH: $ARCH"; exit 1 ;;
     esac
 
-    export HOST_PLATFORM=${OPENJDK_ARCH}-unknown-linux-gnu  
-    if [ "$ARCH" = "arm" ]; then  
-        HOST_PLATFORM="${HOST_PLATFORM}eabi"  
-    fi
 
     # Boot JDK REQUIRED
     export JAVA_HOME=${JAVA_HOME:?Set JAVA_HOME to host JDK}
@@ -48,7 +44,7 @@ build_package() {
 
     rm -rf "$INSTALL_DIR"
 
-    BUILD_DIR="build-$ARCH"
+    export BUILD_DIR="build-$ARCH"
 
     rm -rf "$BUILD_DIR"
     mkdir -p "$BUILD_DIR"
@@ -56,7 +52,7 @@ build_package() {
 
     rsync -a --exclude='build-$ARCH' ".." "."
     bash ./configure \
-        --openjdk-target=$HOST_PLATFORM \
+        --openjdk-target=$TARGET_TRIPLE \
         --with-toolchain-type=clang \
         --with-debug-level=release \
         --with-jvm-variants=server \
