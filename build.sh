@@ -49,8 +49,10 @@ function configure_and_build {
 }
 
 export PACKAGE=$1
+export ARCH=$2
 export PACKAGES_DIRECTORY="$(pwd)/packages"
 export PACKAGE_DIRECTORY="$PACKAGES_DIRECTORY/$PACKAGE"
+export ALL_PACKAGES_BUILD_DIR="$(pwd)/build"
 BUILD_SCRIPT="$PACKAGE_DIRECTORY/build.sh"
 
 if [ -z "$PACKAGE" ]; then
@@ -84,10 +86,7 @@ fi
 # Build for all architecture
 cd "$PACKAGE_DIRECTORY/src"
 
-
-for arch in arm64 arm x86 x86_64; do
-  configure_and_build $arch
-done
+configure_and_build $ARCH
 
 cd ../..
 

@@ -4,6 +4,7 @@ set -e
 apply_patches() {
     echo "[*] Apply patches for $PACKAGE"
     local PATCH_DIR="$PACKAGE_DIRECTORY/patch"
+    local SRC_DIR="$PACKAGE_DIRECTORY/src"
 
     if [ ! -d "$SRC_DIR" ]; then
         echo "[!] Source directory '$SRC_DIR' does not exist, skipping patches."

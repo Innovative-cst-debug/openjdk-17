@@ -2,13 +2,13 @@
 set -e
 
 # Hard coded for build order
+ARCH=$1
 for pkg in "zlib" "littlecms" "libiconv" "libc++" "libandroid-shmem" "libandroid-spawn"; do
-  ./build.sh $pkg
+  ./build.sh $pkg $ARCH
 done
 
 PACKAGES_DIR="./packages"
 ROOT_BUILD_DIR="./build"
-ARCHS=(arm64 arm x86 x86_64)
 
 mkdir -p "$ROOT_BUILD_DIR"
 
@@ -30,18 +30,16 @@ rm -rf $ROOT_BUILD_DIR
 for pkg in "${packages[@]}"; do
     echo "Processing package: $pkg"
 
-    for arch in "${ARCHS[@]}"; do
-        SRC_INCLUDE="$PACKAGES_DIR/$pkg/src/build-$arch/install"
-        DST_INCLUDE="$ROOT_BUILD_DIR/$arch"
+    SRC_INCLUDE="$PACKAGES_DIR/$pkg/src/build-$ARCH/install"
+    DST_INCLUDE="$ROOT_BUILD_DIR/$ARCH"
 
-        if [ -d "$SRC_INCLUDE" ]; then
-            mkdir -p "$DST_INCLUDE"
-            cp -r "$SRC_INCLUDE/" "$DST_INCLUDE/"
-            echo "Copied include for $pkg [$arch] -> $DST_INCLUDE"
-        else
-            echo "Include folder not found for $pkg [$arch], skipping."
-        fi
-    done
+    if [ -d "$SRC_INCLUDE" ]; then
+        mkdir -p "$DST_INCLUDE"
+        cp -r "$SRC_INCLUDE/" "$DST_INCLUDE/"
+        echo "Copied include for $pkg [$ARCH] -> $DST_INCLUDE"
+    else
+        echo "Include folder not found for $pkg [$ARCH], skipping."
+    fi
 
     echo
 done
