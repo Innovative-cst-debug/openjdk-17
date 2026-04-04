@@ -34,8 +34,8 @@ build_package() {
     cd ..
     
     # Unset all toolchain and flags
-    NDK=$ANDROID_NDK
-    TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
+    unset NDK
+    unset TOOLCHAIN
     unset CC
     unset CXX
     unset AR
