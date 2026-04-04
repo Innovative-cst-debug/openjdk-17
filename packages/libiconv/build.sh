@@ -19,13 +19,14 @@ build_package() {
 
     BUILD_DIR="build-$ARCH"
     INSTALL_DIR="$(pwd)/$BUILD_DIR/install/$PREFIX"
+    FULL_BUILD_DIR="$(pwd)/$BUILD_DIR/build/$PREFIX"
 
     rm -rf "$BUILD_DIR"
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
 
     ../configure \
-      --prefix=$INSTALL_DIR \
+      --prefix=$FULL_BUILD_DIR \
       --host=$TARGET \
       --enable-extra-encodings \
       --enable-shared \
@@ -34,9 +35,10 @@ build_package() {
 
     make -j$(nproc)
     make install
+    
+    mkdir -p $INSTALL_DIR
+    cp -rf $FULL_BUILD_DIR/bin $INSTALL_DIR
     cd ..
 
-    find "$INSTALL_DIR" -mindepth 1 ! -path "*/bin/iconv" -delete
-
-    unset CC CXX AR RANLIB STRIP CFLAGS LDFLAGS BUILD_DIR INSTALL_DIR
+    unset CC CXX AR RANLIB STRIP CFLAGS LDFLAGS BUILD_DIR INSTALL_DIR FULL_BUILD_DIR
 }
