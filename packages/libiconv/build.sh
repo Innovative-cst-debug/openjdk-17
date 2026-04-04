@@ -36,5 +36,7 @@ build_package() {
     make install
     cd ..
 
+    find "$INSTALL_DIR" -mindepth 1 ! -path "*/bin/iconv" -delete
+
     unset CC CXX AR RANLIB STRIP CFLAGS LDFLAGS BUILD_DIR INSTALL_DIR
 }
