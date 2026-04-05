@@ -4,7 +4,10 @@ set -e
 PACKAGE_NAME=com.logicodeum.ide
 PREFIX=/data/data/$PACKAGE_NAME/files/usr
 
-source ./setup.sh
+# only good inside GitHub Actions
+if [[ "$CI" == "true" ]]; then
+	source ./setup.sh
+fi
 source ./download_source.sh
 source ./apply_source_patch.sh
 

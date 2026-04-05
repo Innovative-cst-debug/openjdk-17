@@ -6,7 +6,6 @@ configure() {
 
     export NDK=$ANDROID_NDK
     export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
-    export SYSROOT="$TOOLCHAIN/sysroot"
     export INSTALL_DIR="$(pwd)/$BUILD_DIR/install/$PREFIX/lib/jvm/java-17"
 
     export AR=$TOOLCHAIN/bin/llvm-ar
@@ -21,9 +20,10 @@ configure() {
 
     export CC="$TOOLCHAIN/bin/${TARGET}${API}-clang"
     export CXX="$TOOLCHAIN/bin/${TARGET}${API}-clang++"
-    export CFLAGS="--sysroot=$SYSROOT -fPIC -I$SYSROOT_PREFIX/include"
-    export CXXFLAGS="--sysroot=$SYSROOT -fPIC -I$SYSROOT_PREFIX/include"
-    export LDFLAGS="-L$SYSROOT_PREFIX/lib -Wl,-rpath=$SYSROOT_PREFIX/lib"
+    export CFLAGS="-fPIC -isystem$SYSROOT_PREFIX/include"
+    export CXXFLAGS="-fPIC -isystem$SYSROOT_PREFIX/include"
+    export LDFLAGS="-L$SYSROOT_PREFIX/lib -Wl,-rpath=/data/data/com.logicodeum.ide/files/usr/lib"
+    export HOST_LLVM_BASE_DIR=/usr/lib/llvm/21 #THIS CHANGES DEPENDING ON WHAT GNU/LINUX DISTRO IS BUILDING OPENJDK. CHANGES IN GITHUB ACTIONS. another possible other location: /usr/lib/llvm-21
 
     case "$ARCH" in
         arm64) export TARGET_TRIPLE="aarch64-linux-gnu" ;;
@@ -65,6 +65,19 @@ build_package() {
         --with-libjpeg=system \
         --with-lcms=system \
         --with-vendor-name="Logicodium" \
+        --enable-headless-only \
+        AR="$AR" \
+        NM="$NM" \
+        OBJCOPY="$OBJCOPY" \
+        OBJDUMP="$OBJDUMP" \
+        STRIP="$STRIP" \
+        CXXFILT="llvm-cxxfilt" \
+        BUILD_CC="$HOST_LLVM_BASE_DIR/bin/clang" \
+        BUILD_CXX="$HOST_LLVM_BASE_DIR/bin/clang++" \
+        BUILD_NM="$HOST_LLVM_BASE_DIR/bin/llvm-nm" \
+        BUILD_AR="$HOST_LLVM_BASE_DIR/bin/llvm-ar" \
+        BUILD_OBJCOPY="$HOST_LLVM_BASE_DIR/bin/llvm-objcopy" \
+        BUILD_STRIP="$HOST_LLVM_BASE_DIR/bin/llvm-strip" \
         --with-jobs=$(nproc)
 
     make images -j$(nproc)

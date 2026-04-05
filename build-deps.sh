@@ -3,7 +3,7 @@ set -e
 
 # Hard coded for build order
 ARCH=$1
-for pkg in "zlib" "littlecms" "libiconv" "libc++" "libandroid-shmem" "libandroid-spawn"; do
+for pkg in "zlib" "littlecms" "libiconv" "libc++" "libandroid-shmem" "libandroid-spawn" "gmp" "nettle" "gnutls" "cups"; do
   ./build.sh $pkg $ARCH
 done
 

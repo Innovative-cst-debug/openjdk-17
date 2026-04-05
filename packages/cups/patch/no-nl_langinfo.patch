@@ -1,0 +1,13 @@
+diff --git a/cups/language.c b/cups/language.c
+index ccc639b..f9b084e 100644
+--- a/cups/language.c
++++ b/cups/language.c
+@@ -613,7 +613,7 @@ cupsLangGet(const char *language)	/* I - Language or locale */
+   * this value as the character set...
+   */
+ 
+-  if (!charset[0] && (csptr = nl_langinfo(CODESET)) != NULL)
++  if (!charset[0] && (csptr = "UTF-8") != NULL)
+   {
+    /*
+     * Copy all of the letters and numbers in the CODESET string...

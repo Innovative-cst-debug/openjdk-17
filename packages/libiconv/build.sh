@@ -38,6 +38,7 @@ build_package() {
     
     mkdir -p $INSTALL_DIR
     cp -rf $FULL_BUILD_DIR/bin $INSTALL_DIR
+    cp -rf $FULL_BUILD_DIR/lib $INSTALL_DIR/lib
     cd ..
 
     unset CC CXX AR RANLIB STRIP CFLAGS LDFLAGS BUILD_DIR INSTALL_DIR FULL_BUILD_DIR
