@@ -11,6 +11,12 @@
 android-ndk-r26d/
 android-ndk-r26d-linux.zip
 
+# Bootjdk
+bootjdk/
+
+# Setup marker
+.setup_done
+
 # Source directory (downloaded code)
 src/
 

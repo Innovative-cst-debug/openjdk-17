@@ -2,11 +2,7 @@ HAS_SOURCE=false
 SRC_URL="https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.1.4/libjpeg-turbo-3.1.4.tar.gz"
 
 configure() {
-    echo "[*] Configuring build for $PACKAGE-$ARCH"
-
-    NDK=$ANDROID_NDK
-    TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
-    SYSROOT="$TOOLCHAIN/sysroot"
+    export SYSROOT="$TOOLCHAIN/sysroot"
     
     case $ARCH in
       arm64) export ANDROID_ABI=arm64-v8a ;;
@@ -15,30 +11,9 @@ configure() {
       x86_64) export ANDROID_ABI=x86_64 ;;
     esac
 
-    export CC="$TOOLCHAIN/bin/${TARGET}${API}-clang"
-    export CXX="$TOOLCHAIN/bin/${TARGET}${API}-clang++"
-    export AR="$TOOLCHAIN/bin/llvm-ar"
-    export RANLIB="$TOOLCHAIN/bin/llvm-ranlib"
-    export STRIP="$TOOLCHAIN/bin/llvm-strip"
-
     export CFLAGS="--sysroot=$SYSROOT -fPIC"
     export CXXFLAGS="$CFLAGS"
     export LDFLAGS="--sysroot=$SYSROOT"
-}
-
-# =========================
-# Build step (CMake)
-# =========================
-build_package() {
-    echo "[*] Building $PACKAGE-$ARCH"
-
-    BUILD_DIR="build-$ARCH"
-    INSTALL_DIR="$(pwd)/$BUILD_DIR/install/$PREFIX"
-    FULL_BUILD_DIR="$(pwd)/$BUILD_DIR/build/$PREFIX"
-
-    rm -rf "$BUILD_DIR"
-    mkdir -p "$BUILD_DIR"
-    cd "$BUILD_DIR"
 
     cmake .. \
         -DCMAKE_INSTALL_PREFIX=$FULL_BUILD_DIR \
@@ -53,6 +28,12 @@ build_package() {
         -DWITH_JPEG8=1 \
         -DENABLE_SHARED=ON \
         -DENABLE_STATIC=OFF
+}
+
+# =========================
+# Build step (CMake)
+# =========================
+build_package() {
 
     make -j$(nproc)
     make install
@@ -62,11 +43,10 @@ build_package() {
     
     cp -rf $FULL_BUILD_DIR/bin $INSTALL_DIR
     cp -rf $FULL_BUILD_DIR/share/man/man1 $INSTALL_DIR/share/man
+}
 
-    cd ..
-
-    # Cleanup env
-    unset CC CXX AR RANLIB STRIP CFLAGS CXXFLAGS LDFLAGS BUILD_DIR INSTALL_DIR ANDROID_ABI FULL_BUILD_DIR
+function unset_build_variables {
+    unset CFLAGS CXXFLAGS LDFLAGS
 }
 
 post_build() {

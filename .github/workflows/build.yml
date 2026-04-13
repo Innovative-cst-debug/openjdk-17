@@ -18,7 +18,7 @@ jobs:
 
       - name: Build for all architectures
         run: |
-          chmod +x build-openjdk-17.sh
+          chmod +x *.sh
           ./build-openjdk-17.sh ${{ matrix.target_arch }}
 
       - name: Upload build artifacts

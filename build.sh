@@ -2,14 +2,21 @@
 set -e
 
 PACKAGE_NAME=com.logicodeum.ide
-PREFIX=/data/data/$PACKAGE_NAME/files/usr
+PREFIX=data/data/$PACKAGE_NAME/files/usr
 
-# only good inside GitHub Actions
-if [[ "$CI" == "true" ]]; then
-	source ./setup.sh
+
+if [ ! -f ".setup_done" ]; then
+    # setup env as well as env variables
+    echo "[!] Setup incomplete. Running `./setup.sh setup_env`..."
+    source ./scripts/setup.sh setup_env
+else
+    # Only setup env variables
+    source ./scripts/setup.sh setup_env_variables
 fi
-source ./download_source.sh
-source ./apply_source_patch.sh
+
+source ./scripts/download_source.sh
+source ./scripts/apply_source_patch.sh
+source ./scripts/rsync_source.sh
 
 function unset_variables {
     unset HAS_SOURCE
@@ -19,11 +26,13 @@ function unset_variables {
     unset ARCH
     unset TARGET
     unset API
-    unset NDK
-    unset TOOLCHAIN
     unset SRC_URL
     unset NEED_SOURCE
     unset PACKAGES_DIRECTORY
+    unset SOURCE_ALREADY_EXISTS
+    unset BUILD_DIR
+    unset INSTALL_DIR
+    unset FULL_BUILD_DIR
 }
 
 function configure_and_build {
@@ -47,8 +56,25 @@ function configure_and_build {
       export API=24
       ;;
   esac
+
+  export CC="$TOOLCHAIN/bin/${TARGET}${API}-clang"
+  export CXX="$TOOLCHAIN/bin/${TARGET}${API}-clang++"
+  export BUILD_DIR="build-$ARCH"
+  export INSTALL_DIR="$(pwd)/$BUILD_DIR/install/$PREFIX"
+  export FULL_BUILD_DIR="$(pwd)/$BUILD_DIR/build/$PREFIX"
+  
+  rm -rf "$BUILD_DIR"
+  mkdir -p "$BUILD_DIR"
+  cd "$BUILD_DIR"
+  
+  echo "[*] Configuring build for $PACKAGE-$ARCH"
   configure
+
+  echo "[*] Building $PACKAGE-$ARCH"
   build_package
+  unset_build_variables
+  
+  cd ..
 }
 
 export PACKAGE=$1
@@ -73,13 +99,22 @@ source "$BUILD_SCRIPT"
 
 echo "[*] Reading to build $PACKAGE...."
 
+if [ -d "$PACKAGE_DIRECTORY/src" ]; then
+    SOURCE_ALREADY_EXISTS=true
+fi
+
 # Only download if source is not present and source is needed (default true)
-if [ "$HAS_SOURCE" = "false" ] && [ "${NEED_SOURCE:-true}" = "true" ]; then
+if [ "$HAS_SOURCE" = "false" ] && [ "${NEED_SOURCE:-true}" = "true" ] && [ "$SOURCE_ALREADY_EXISTS" != "true" ]; then
     download_and_extract_to_src "$SRC_URL"
 fi
 
-# Apply patches
-apply_patches
+# Apply patches when it is sure that source is downloaded
+if [ "$SOURCE_ALREADY_EXISTS" != "true" ]; then
+    apply_patches
+else
+    echo "[!] SOURCE_ALREADY_EXISTS is set to true, assuming patches are already applied..."
+fi
+
 
 if [ ! -d "$PACKAGE_DIRECTORY/src" ]; then
     # Initialize empty dir
