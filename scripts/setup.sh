@@ -11,6 +11,37 @@ NDK_URL="https://dl.google.com/android/repository/${NDK_ZIP}"
 BOOTJDK_VERSION="17"
 BOOTJDK_DIR="$PWD/bootjdk"
 
+function apply_ndk_patches() {
+    echo "[*] Applying NDK patches..."
+
+    local PATCH_DIR="ndk-patches"
+    local NDK_SRC="$NDK_DIR"
+
+    if [ ! -d "$PATCH_DIR" ]; then
+        echo "[!] No ndk-patches directory found, skipping..."
+        return 0
+    fi
+
+    cd "$NDK_SRC"
+
+    shopt -s nullglob
+    for patch in "../$PATCH_DIR"/*.patch; do
+        echo "    Applying $(basename "$patch")"
+
+        patch -p1 --forward --silent < "$patch" || {
+            echo "[!] Patch $(basename "$patch") failed"
+            exit 1
+        }
+    done
+    shopt -u nullglob
+
+    cd - > /dev/null
+
+    echo "[✓] NDK patches applied"
+}
+
+
+
 function setup_env_variables {
   echo "[*] Setting up environment variables..."
   export ANDROID_NDK="$NDK_DIR"
@@ -64,6 +95,8 @@ function setup_env {
             wget -q --show-progress "$NDK_URL"
         fi
         unzip -q "$NDK_ZIP"
+        
+        apply_ndk_patches
     fi
     
     ls "$TOOLCHAIN/bin" | grep -q clang || { echo "Toolchain missing!"; exit 1; }
