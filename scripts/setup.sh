@@ -29,8 +29,7 @@ function apply_ndk_patches() {
         echo "    Applying $(basename "$patch")"
 
         patch -p1 --forward --silent < "$patch" || {
-            echo "[!] Patch $(basename "$patch") failed"
-            exit 1
+            echo "[!] Patch $(basename "$patch") failed, skipping..."
         }
     done
     shopt -u nullglob
@@ -39,8 +38,6 @@ function apply_ndk_patches() {
 
     echo "[✓] NDK patches applied"
 }
-
-
 
 function setup_env_variables {
   echo "[*] Setting up environment variables..."

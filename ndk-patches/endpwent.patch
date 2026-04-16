@@ -1,18 +1,17 @@
---- toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/pwd.h       2024-03-14 22:43:01.000000000 +0000
-+++ toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/pwd.h       2026-04-16 14:24:08.905460733 +0000
-@@ -85,10 +85,12 @@
-void setpwent(void) __INTRODUCED_IN(26);
+--- android-ndk-r26d/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/pwd.h	2026-04-16 15:51:36.755437498 +0000
++++ android-ndk-r26d/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/pwd.h	2026-04-16 15:49:48.937445159 +0000
+@@ -89,12 +89,13 @@
+ struct passwd* _Nullable getpwent(void) __INTRODUCED_IN(26);
+ 
+ void setpwent(void) __INTRODUCED_IN(26);
 -void endpwent(void) __INTRODUCED_IN(26);
 +// void endpwent(void) __INTRODUCED_IN(26);
-#endif /* ANDROID_API >= 26 */
-
-int getpwnam_r(const char* _Nonnull __name, struct passwd* _Nonnull __pwd, char* _Nonnull __buf, size_t __n, struct passwd* _Nullable * _Nonnull __result);
-int getpwuid_r(uid_t __uid, struct passwd* _Nonnull __pwd, char* _Nonnull __buf, size_t __n, struct passwd* _Nullable * _Nonnull __result);
-
+ #endif /* __ANDROID_API__ >= 26 */
+ 
+ 
+ int getpwnam_r(const char* _Nonnull __name, struct passwd* _Nonnull __pwd, char* _Nonnull __buf, size_t __n, struct passwd* _Nullable * _Nonnull __result);
+ int getpwuid_r(uid_t __uid, struct passwd* _Nonnull __pwd, char* _Nonnull __buf, size_t __n, struct passwd* _Nullable * _Nonnull __result);
 +static void endpwent(void) { /* Do nothing. */ }
-+
-__END_DECLS
-
-#endif
-
-How to apply?
+ 
+ __END_DECLS
+ 
