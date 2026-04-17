@@ -13,12 +13,15 @@ configure() {
     export PKG_CONFIG_LIBDIR="$(realpath ../../../"gnutls/$REL_PC_DIR")"
     PKG_CONFIG_LIBDIR+=":$(realpath ../../../"nettle/$REL_PC_DIR")"
     PKG_CONFIG_LIBDIR+=":$(realpath ../../../"gmp/$REL_PC_DIR")"
+    PKG_CONFIG_LIBDIR+=":$(realpath ../../../"libcrypt/$REL_PC_DIR")"
     CFLAGS+=" -isystem$(realpath ../../../"gnutls/$REL_INCLUDE_DIR")"
     CFLAGS+=" -isystem$(realpath ../../../"nettle/$REL_INCLUDE_DIR")"
     CFLAGS+=" -isystem$(realpath ../../../"gmp/$REL_INCLUDE_DIR")"
+    CFLAGS+=" -isystem$(realpath ../../../"libcrypt/$REL_INCLUDE_DIR")"
     LDFLAGS+=" -L$(realpath ../../../"gnutls/$REL_LIB_DIR")"
     LDFLAGS+=" -L$(realpath ../../../"nettle/$REL_LIB_DIR")"
     LDFLAGS+=" -L$(realpath ../../../"gmp/$REL_LIB_DIR")"
+    LDFLAGS+=" -L$(realpath ../../../"libcrypt/$REL_LIB_DIR")"
 
     rsync -a --exclude='build-*' "../" "."
 
