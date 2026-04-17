@@ -22,6 +22,7 @@ configure() {
     LDFLAGS+=" -L$(realpath ../../../"nettle/$REL_LIB_DIR")"
     LDFLAGS+=" -L$(realpath ../../../"gmp/$REL_LIB_DIR")"
     LDFLAGS+=" -L$(realpath ../../../"libcrypt/$REL_LIB_DIR")"
+    LDFLAGS+=" -lcrypt"
 
     resync_source
 
