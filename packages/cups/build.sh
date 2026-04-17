@@ -23,7 +23,7 @@ configure() {
     LDFLAGS+=" -L$(realpath ../../../"gmp/$REL_LIB_DIR")"
     LDFLAGS+=" -L$(realpath ../../../"libcrypt/$REL_LIB_DIR")"
 
-    rsync -a --exclude='build-*' "../" "."
+    resync_source
 
     ./configure \
         --host=$TARGET \

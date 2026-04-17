@@ -7,7 +7,7 @@ configure() {
     export CXXFLAGS="$CFLAGS"
     export LDFLAGS="--sysroot=$TOOLCHAIN/sysroot"
 
-    rsync -a --exclude='build-*' ../ .
+    resync_source
 }
 
 build_package() { 

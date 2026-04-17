@@ -8,7 +8,7 @@ configure() {
     export CXXFLAGS="$CFLAGS"
     export LDFLAGS="--sysroot=$SYSROOT -L$LIBCXX_LIB -lc++_shared"
 
-    rsync -a --exclude='build-*' "../" "."
+    resync_source
 }
 
 build_package() { 

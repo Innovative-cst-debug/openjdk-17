@@ -5,6 +5,8 @@ configure() {
     export CPPFLAGS=""
     mkdir -p $INSTALL_DIR/lib/
     mkdir -p $INSTALL_DIR/include/
+
+    resync_source
 }
 
 build_package() {
