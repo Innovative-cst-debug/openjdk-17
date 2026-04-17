@@ -7,6 +7,14 @@ configure() {
     mkdir -p $INSTALL_DIR/lib/
     mkdir -p $INSTALL_DIR/include/
 
+    local REL_LIB_DIR="src/$BUILD_DIR/install/$PREFIX/lib"
+    local REL_INCLUDE_DIR="src/$BUILD_DIR/install/$PREFIX/include"
+    local REL_PC_DIR="$REL_LIB_DIR/pkgconfig"
+
+    export PKG_CONFIG_LIBDIR="$(realpath ../../../"openssl/$REL_PC_DIR")"
+    CFLAGS+=" -isystem$(realpath ../../../"openssl/$REL_INCLUDE_DIR")"
+    LDFLAGS+=" -L$(realpath ../../../"openssl/$REL_LIB_DIR")"
+
     resync_source
 }
 
