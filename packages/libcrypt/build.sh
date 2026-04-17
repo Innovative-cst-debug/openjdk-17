@@ -1,3 +1,4 @@
+HAS_SOURCE=true
 
 configure() {
     export CFLAGS="-fPIC"
